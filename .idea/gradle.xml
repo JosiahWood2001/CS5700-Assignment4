@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT">
+            <builds>
+              <build path="$PROJECT_DIR$/D5700CPU/buildSrc" name="buildSrc">
+                <projects>
+                  <project path="$PROJECT_DIR$/D5700CPU/buildSrc" />
+                </projects>
+              </build>
+            </builds>
+          </compositeBuild>
+        </compositeConfiguration>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/D5700CPU" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/D5700CPU" />
+            <option value="$PROJECT_DIR$/D5700CPU/app" />
+            <option value="$PROJECT_DIR$/D5700CPU/buildSrc" />
+            <option value="$PROJECT_DIR$/D5700CPU/utils" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>
