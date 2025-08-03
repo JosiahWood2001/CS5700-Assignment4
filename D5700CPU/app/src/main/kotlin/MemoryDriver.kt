@@ -2,7 +2,11 @@ package org.example.app
 
 class MemoryDriver {
     private val memoryList = mutableListOf<Memory>()
-    private fun checkBounds(displayIndex: Int) {}
+    private fun checkBounds(memoryIndex: Int) {
+        if (memoryIndex < 0 || memoryIndex >= memoryList.size) {
+            throw IndexOutOfBoundsException("No memory device at index $memoryIndex")
+        }
+    }
     fun getMemorySize(memoryIndex: Int): Int{
         checkBounds(memoryIndex)
         return memoryList[memoryIndex].size
@@ -22,5 +26,16 @@ class MemoryDriver {
     fun numberOfDevices(): Int{
         return memoryList.size
     }
-
+    fun makeWritable(memoryIndex: Int){
+        checkBounds(memoryIndex)
+        memoryList[memoryIndex].makeWritable()
+    }
+    fun makeReadOnly(memoryIndex: Int){
+        checkBounds(memoryIndex)
+        memoryList[memoryIndex].makeReadOnly()
+    }
+    fun getWriteBehavior(memoryIndex: Int): WriteBehavior {
+        checkBounds(memoryIndex)
+        return memoryList[memoryIndex].writeBehavior
+    }
 }

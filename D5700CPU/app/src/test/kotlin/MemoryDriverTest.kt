@@ -29,9 +29,13 @@ class MemoryDriverTest {
     }
 
     @Test
-    fun `getMemorySize returns 0 for out of bounds index`() {
+    fun `getMemorySize throws for out of bounds index`() {
         val driver = MemoryDriver()
-        assertEquals(0, driver.getMemorySize(99))
+
+        val ex = assertThrows<IndexOutOfBoundsException> {
+            driver.getMemorySize(99)
+        }
+        assertEquals("No memory device at index 99", ex.message)
     }
 
     @Test
@@ -75,5 +79,24 @@ class MemoryDriverTest {
         driver.createMemoryDevice(20, ReadOnlyThrowError)
 
         assertEquals(2, driver.numberOfDevices())
+    }
+    @Test
+    fun `makeReadOnly sets memory to read-only`() {
+        val memoryDriver = MemoryDriver()
+        memoryDriver.createMemoryDevice(256, ReadOnlyThrowError)
+        memoryDriver.makeWritable(0) // Ensure it's writable first
+        memoryDriver.makeReadOnly(0)
+
+        assertTrue(memoryDriver.getWriteBehavior(0)== ReadOnlyThrowError, "Memory should be read-only after makeReadOnly()")
+    }
+
+    @Test
+    fun `makeWritable sets memory to writable`() {
+        val memoryDriver = MemoryDriver()
+        memoryDriver.createMemoryDevice(256, ReadOnlyThrowError)
+        memoryDriver.makeReadOnly(0) // Ensure it's read-only first
+        memoryDriver.makeWritable(0)
+
+        assertTrue(memoryDriver.getWriteBehavior(0)== Writable, "Memory should be writable after makeWritable()")
     }
 }
