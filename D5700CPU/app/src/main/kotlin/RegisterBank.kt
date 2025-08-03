@@ -40,4 +40,10 @@ class RegisterBank {
         }
         registers[key]!!.setRegister(value)
     }
+    fun checkRegister(key: Char): Boolean {
+        if (key !in registers){
+            return false
+        }
+        return true
+    }
 }

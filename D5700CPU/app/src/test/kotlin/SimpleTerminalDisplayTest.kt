@@ -14,7 +14,7 @@ class SimpleTerminalDisplayTest {
         val height = 2
         val bytesPerPixel = 1
         val memory = Memory(width * height * bytesPerPixel, Writable)
-        val display = SimpleTerminalDisplay()
+        val display = SimpleTerminalDisplay
 
         // Fill the framebuffer with ASCII characters: A-F
         val chars = "ABCDEF"
