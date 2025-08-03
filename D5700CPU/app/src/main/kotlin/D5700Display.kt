@@ -15,6 +15,7 @@ class D5700Display(
         for (i in 0 until value.size) {
             frameBuffer.write(value[i], (x + y * width) * bytesPerPixel + i)
         }
+        display()
     }
 
     override fun display() {

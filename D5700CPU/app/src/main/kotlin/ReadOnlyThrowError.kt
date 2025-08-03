@@ -1,11 +1,11 @@
 package org.example.app
 
-import java.io.IOException
+import kotlin.UnsupportedOperationException
 
 object ReadOnlyThrowError : WriteBehavior {
     override fun write(): (ByteArray, Byte, Int) -> Unit {
         return {
-            _, _, _ -> throw IOException("Cannot write to memory, Read Only Memory") as Throwable
+            _, _, _ -> throw UnsupportedOperationException("This memory is read-only.") as Throwable
         }
     }
 }
