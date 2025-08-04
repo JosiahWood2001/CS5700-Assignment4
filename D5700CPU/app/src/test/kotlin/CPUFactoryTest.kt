@@ -112,7 +112,7 @@ class CPUFactoryTest {
         assertSame(mockDisplayDriver, cpu.displayDriver)
 
         // Registers map should contain 'P' and 'T' keys with correct sizes
-        assertEquals(2, cpu.registers.readRegister('P').size)
-        assertEquals(1, cpu.registers.readRegister('T').size)
+        assertEquals(2, cpu.withRegisterBank{ it.readRegister('P').size})
+        assertEquals(1, cpu.withRegisterBank{it.readRegister('T').size})
     }
 }

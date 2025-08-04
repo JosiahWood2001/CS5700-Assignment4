@@ -46,4 +46,8 @@ class RegisterBank {
         }
         return true
     }
+    fun registerSize(key: Char): Int{
+        validateRegister(key)
+        return registers[key]!!.size
+    }
 }

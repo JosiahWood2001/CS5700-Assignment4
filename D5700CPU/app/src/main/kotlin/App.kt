@@ -9,7 +9,7 @@ fun main() {
     //create CPU
     val cpuFactory = CPUFactory(8,500,InstructionsSetD5700)
     for (registerNumber in 0..8){
-        cpuFactory.addRegister(registerNumber.toChar(),1)
+        cpuFactory.addRegister(('0'.code + registerNumber).toChar(),1)
     }
     cpuFactory.addRegister('P',2)
         .addRegister('T',1)

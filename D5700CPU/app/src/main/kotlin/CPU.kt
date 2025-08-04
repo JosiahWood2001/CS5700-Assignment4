@@ -4,6 +4,7 @@ import jdk.internal.org.jline.keymap.KeyMap.key
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
+import kotlin.system.exitProcess
 
 class CPU(
     val clockSpeed: Int,
@@ -15,10 +16,9 @@ class CPU(
     val memoryDriver: MemoryDriver,
     val displayDriver: DisplayDriver
     ) {
-    val registers: RegisterBank = RegisterBank()
+    private val registers: RegisterBank = RegisterBank()
     val executor = Executors.newSingleThreadScheduledExecutor()
     val currentDisplayTarget = 0
-    val currentMemoryTarget = 0
     val bytesPerInstruction: Int = instructionsHandler.bytesPerInstruction
     private var timerFuture: ScheduledFuture<*>? = null
     private var programFuture: ScheduledFuture<*>? = null
@@ -75,17 +75,44 @@ class CPU(
         val programCounterBytes = registers.readRegister('P')
         val programCounter = programCounterBytes.fold(0) {acc, byte -> (acc shl 8) or (byte.toInt() and 0xFF)}
         val instruction = ByteArray(bytesPerInstruction) {offset ->
-            memoryDriver.read(currentMemoryTarget, programCounter + offset)
+            memoryDriver.read(1, programCounter + offset)
         }
-        val newProgramCounter = programCounter + bytesPerInstruction
-        val newPCBytes = ByteArray(programCounterBytes.size) {i->
-            ((newProgramCounter shr (8 * (programCounterBytes.size - i - 1))) and 0xFF).toByte()
+        if (instruction.joinToString(""){"%02X".format(it)}=="0000"){
+            terminateProgram()
+            return
         }
-        registers.writeRegister('P', newPCBytes)
-        instructionsHandler.executeInstruction(instruction)
+        val operation = instructionsHandler.generateInstruction(instruction)
+        operation(this)
     }
     fun terminateProgram(){
         programFuture?.cancel(false)
         programFuture = null
+        executor.shutdownNow() // Optional: Clean up executor
+        exitProcess(0)
+    }
+    fun <T> withRegisterBank(action: (RegisterBank) -> T): T {
+        return action(registers)
+    }
+    fun pauseExecution(){
+        programFuture?.cancel(false)
+        programFuture = null
+    }
+    fun resumeExecution(){
+        pauseExecution()
+        programFuture = executor.scheduleAtFixedRate(
+            programRunnable,
+            0L,
+            (1000L / clockSpeed),
+            TimeUnit.MILLISECONDS
+        )
+    }
+    fun getCurrentMemoryTarget(): Int {
+        return (registers.readRegister('M')[0].toInt() and 0x0F)
+    }
+    fun setCurrentMemoryTarget(memoryTarget: Int) {
+        val current = registers.readRegister('M')
+        val newValue = ByteArray(current.size)
+        newValue[0] = memoryTarget.toByte()
+        registers.writeRegister('M', newValue)
     }
 }

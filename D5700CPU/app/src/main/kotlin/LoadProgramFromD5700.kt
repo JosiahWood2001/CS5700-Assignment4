@@ -50,7 +50,7 @@ object LoadProgramFromD5700 {
     private fun compile(lines: List<String>): ByteArray {
         val byteList = mutableListOf<Byte>()
         for (line in lines) {
-            val trimmed = line.trim()
+            val trimmed = line.substringBefore('#').trim()
             if (trimmed.length != 4) {
                 throw IllegalArgumentException("Invalid instruction length: $trimmed")
             }
